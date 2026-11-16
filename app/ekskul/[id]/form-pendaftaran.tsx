@@ -12,16 +12,16 @@ export default function FormPendaftaran({
   defaultNama: string;
   defaultKelas: string;
 }) {
-  const [state, formAction, isPending] = useActionState(
-    async (prevState: any, formData: FormData): Promise<any> => {
-      return await daftarEkskul(prevState, formData);
-    },
-    {}
-  );
+  const [state, formAction, isPending] = useActionState(daftarEkskul, {});
 
   return (
-    <form action={formAction} className="bg-white shadow rounded-lg p-6 mt-6 border space-y-4">
-      <h2 className="text-xl font-semibold mb-2">Formulir Pendaftaran Ekskul</h2>
+    <form
+      action={formAction}
+      className="bg-white shadow rounded-lg p-6 mt-6 border space-y-4"
+    >
+      <h2 className="text-xl font-semibold mb-2">
+        Formulir Pendaftaran Ekskul
+      </h2>
 
       <input type="hidden" name="ekskulId" value={ekskulId} />
 
@@ -38,7 +38,9 @@ export default function FormPendaftaran({
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Nama Lengkap
+        </label>
         <input
           type="text"
           name="nama"

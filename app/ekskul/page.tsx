@@ -48,6 +48,8 @@ async function DaftarList({ searchParams }: { searchParams: SearchParams }) {
             const jumlahPendaftar = pendaftar.filter(
               (p) => p.ekskulId === ekskul.id,
             ).length;
+
+            // Perbaikan baris sisaTempat yang sebelumnya terpotong
             const sisaTempat = ekskul.kuota - jumlahPendaftar;
             const isPenuh = sisaTempat <= 0;
 
@@ -75,7 +77,8 @@ async function DaftarList({ searchParams }: { searchParams: SearchParams }) {
                   <h2 className="text-xl font-bold mb-2">{ekskul.nama}</h2>
 
                   <p className="text-sm text-gray-600 mb-1">
-                    Jadwal: {ekskul.hari}, Sesi {ekskul.sesi} ({JAM_SESI[ekskul.sesi]})
+                    Jadwal: {ekskul.hari}, Sesi {ekskul.sesi} (
+                    {JAM_SESI[ekskul.sesi]})
                   </p>
                   <p className="text-sm text-gray-600 mb-4">
                     Pembina: {ekskul.pembina}
@@ -145,7 +148,9 @@ export default async function Page({
         </button>
       </form>
 
-      <Suspense fallback={<p className="text-gray-500">Memuat daftar ekskul...</p>}>
+      <Suspense
+        fallback={<p className="text-gray-500">Memuat daftar ekskul...</p>}
+      >
         <DaftarList searchParams={searchParams} />
       </Suspense>
     </main>
