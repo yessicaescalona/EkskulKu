@@ -1,3 +1,4 @@
+
 import { Suspense } from "react";
 import Link from "next/link";
 import { ambilSemuaEkskul } from "@/data/ambil";
@@ -17,7 +18,11 @@ type SearchParams = Promise<{
   hari?: string;
 }>;
 
-async function DaftarList({ searchParams }: { searchParams: SearchParams }) {
+async function DaftarList({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const resolvedParams = await searchParams;
   const selectedKategori = resolvedParams.kategori || "";
   const selectedHari = resolvedParams.hari || "";
@@ -28,7 +33,11 @@ async function DaftarList({ searchParams }: { searchParams: SearchParams }) {
     const matchKategori = selectedKategori
       ? e.kategori === selectedKategori
       : true;
-    const matchHari = selectedHari ? e.hari === selectedHari : true;
+
+    const matchHari = selectedHari
+      ? e.hari === selectedHari
+      : true;
+
     return matchKategori && matchHari;
   });
 
@@ -46,10 +55,9 @@ async function DaftarList({ searchParams }: { searchParams: SearchParams }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredEkskul.map((ekskul) => {
             const jumlahPendaftar = pendaftar.filter(
-              (p) => p.ekskulId === ekskul.id,
+              (p) => p.ekskulId === ekskul.id
             ).length;
 
-            // Perbaikan baris sisaTempat yang sebelumnya terpotong
             const sisaTempat = ekskul.kuota - jumlahPendaftar;
             const isPenuh = sisaTempat <= 0;
 
@@ -63,6 +71,7 @@ async function DaftarList({ searchParams }: { searchParams: SearchParams }) {
                     <span className="bg-blue-50 text-blue-600 text-xs font-semibold px-2.5 py-1 rounded">
                       {ekskul.kategori}
                     </span>
+
                     {isPenuh ? (
                       <span className="bg-red-50 text-red-600 text-xs font-semibold px-2.5 py-1 rounded">
                         Penuh
@@ -74,12 +83,15 @@ async function DaftarList({ searchParams }: { searchParams: SearchParams }) {
                     )}
                   </div>
 
-                  <h2 className="text-xl font-bold mb-2">{ekskul.nama}</h2>
+                  <h2 className="text-xl font-bold mb-2">
+                    {ekskul.nama}
+                  </h2>
 
                   <p className="text-sm text-gray-600 mb-1">
                     Jadwal: {ekskul.hari}, Sesi {ekskul.sesi} (
                     {JAM_SESI[ekskul.sesi]})
                   </p>
+
                   <p className="text-sm text-gray-600 mb-4">
                     Pembina: {ekskul.pembina}
                   </p>
@@ -100,7 +112,31 @@ async function DaftarList({ searchParams }: { searchParams: SearchParams }) {
   );
 }
 
-export default async function Page({
+export default function Page({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  return (
+    <main className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">
+        Daftar Ekstrakurikuler
+      </h1>
+
+      <Suspense
+        fallback={
+          <p className="text-gray-500">
+            Memuat daftar ekskul...
+          </p>
+        }
+      >
+        <FilterEkskul searchParams={searchParams} />
+      </Suspense>
+    </main>
+  );
+}
+
+async function FilterEkskul({
   searchParams,
 }: {
   searchParams: SearchParams;
@@ -110,9 +146,7 @@ export default async function Page({
   const selectedHari = resolvedParams.hari || "";
 
   return (
-    <main className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Daftar Ekstrakurikuler</h1>
-
+    <>
       <form method="GET" className="flex gap-4 mb-6">
         <select
           name="kategori"
@@ -149,10 +183,14 @@ export default async function Page({
       </form>
 
       <Suspense
-        fallback={<p className="text-gray-500">Memuat daftar ekskul...</p>}
+        fallback={
+          <p className="text-gray-500">
+            Memuat daftar ekskul...
+          </p>
+        }
       >
         <DaftarList searchParams={searchParams} />
       </Suspense>
-    </main>
+    </>
   );
 }
